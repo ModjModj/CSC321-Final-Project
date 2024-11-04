@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.png')}}" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          $('.alert').alert()
+        })
+      </script>
+      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body>
+    <img src="{{ url_for('static', filename='logo1.png')}}" alt="logo" id="homelogo">
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        <div class="collapse navbar-collapse" id="navbar">
+        <div class="navbar-nav center">
+            <a class="nav-item nav-link" href="{{ url_for('views.home') }}">Home</a>
+            <a class="nav-item nav-link" href="{{ url_for('views.archive') }}">Archive</a>
+        </div>
+        </div>
+        </div>
+    </nav>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+      {% if messages %}
+        {% for category, message in messages %}
+        {% if category != "success" %}
+        <div class="alert alert-danger alter-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-dismiss="alert"></button>
+        </div>
+          {% else %}
+        <div class="alert alert-success alter-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-dismiss="alert"></button>
+        </div>
+        {% endif %}
+
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+    <button type="button" name="dark_light" title="Toggle dark/light mode" id="theme-toggle">
+        <img src="{{ url_for('static', filename='night.png')}}" width="50" height="50" id = "dark">
+        <img src="{{ url_for('static', filename='day.png')}}" width="55" height="55" id="light">
+    </button>
+    <footer>
+        <p>&copy; 2024 Elijah Simmonds</p>
+    </footer>
+</body>
+
+</html>
+<script>
+
+$(document).ready(function() {
+  //Creates a const to save the current theme
+  const savedTheme = localStorage.getItem('theme');
+
+  //Sets the site to dark or light mode depending on what's saved
+  if (savedTheme) {
+    $('body').addClass(savedTheme);
+    $(".btn-custom").addClass(savedTheme);
+  //If nothing is saved, default to light mode
+  } else {
+    $('body').addClass('light-mode'); 
+    $(".btn-custom").addClass('light-mode');
+  }
+
+  //When the dark mode toggle button is clicked, toggle between light and dark mode
+  $('#theme-toggle').click(function() {
+    $('body').toggleClass('light-mode dark-mode');
+    $('.btn-custom').toggleClass('light-mode dark-mode');
+    //Switch the icons
+    $("#dark").toggle();
+    $("#light").toggle();
+
+    //Save the theme as it's current mode
+    const currentTheme = $('body').hasClass('dark-mode') ? 'dark-mode' : 'light-mode';
+    localStorage.setItem('theme', currentTheme);
+  });
+});
+</script>
+
+<style>
+  #homelogo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 15%;
+  }
+
+  .navbar-custom {
+    background-color: #27a9dc;
+  }
+
+  .custom-placeholder::placeholder {
+    color: white;
+  }
+
+  .center {
+    text-align: center;
+  }
+
+  .navbar-expand-lg {
+    display: flex!important;
+    justify-content: space-around;
+    flex-basis: auto;
+  }
+
+  #theme-toggle{
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+  }
+
+  #dark {
+    display: show;
+    position: fixed;
+    bottom: 60px;
+    right: 8px;
+  }
+
+  #light {
+    display: none;
+    position: fixed;
+    bottom: 60px;
+    right: 8px;
+  }
+
+  footer {
+    text-align: center;
+    padding: 6px 0;
+    background-color: #27a9dc;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+  }
+
+  a:link {
+    color: white;
+    text-decoration: none;
+    text-align: center;
+  }
+
+  a:visited {
+    color: white;
+    text-decoration: none;
+    text-align: center;
+  }
+
+  a:hover {
+    color: white;
+    text-decoration: none;
+    text-align: center;
+  }
+
+  a:active {
+    color: white;
+    text-decoration: none;
+    text-align: center;
+  }
+
+  body {
+    padding-bottom: 100px
+  }
+
+  body.dark-mode {
+    background-color: #201c1c;
+    color: white;
+  }
+
+  body.dark-mode a {
+    color: white;
+  }
+
+  body.light-mode {
+    background-color: white;
+    color: black;
+  }
+  body.light-mode a {
+    color: black;
+  }
+
+  footer.dark-mode {
+    color: white;
+  }
+  footer.dark-mode p {
+    color: #201c1c;
+  }
+  footer.light-mode {
+    color: #111;
+  }
+  footer.light-mode p {
+    color: white;
+  }
+
+  .btn-custom:hover{
+    color: white;
+    background-color: #27a9dc;
+  }
+
+  .btn-custom.light-mode{
+    color: white;
+    background-color: #27a9dc;
+  }
+
+  .btn-custom.dark-mode{
+    color: black;
+    background-color: #27a9dc;
+  }
+</style>
