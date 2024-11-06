@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block title %}
+Advanced Search
+{% endblock %}
+{% block content %}
+<br>
+<form method = "GET" action="{{ url_for('views.advanced_results') }}">
+    <h3 align=" center">
+        Advanced Search
+    </h3>
+    <div class = "form-group">
+        <label for="name">Author Id</label>
+        <input type="number" name="name" class="form-control" placeholder="Enter Author Id"/>
+        <br>
+        <label for="text">Post Content</label>
+        <input type="text" name="query" class="form-control" placeholder="Enter Text"/>
+        <br>
+        <div align = "center">
+        <button class = "btn btn-custom" type="Submit">
+            Search
+        </button>
+        </div>
+    </div>
+    </form>
+{% endblock %}

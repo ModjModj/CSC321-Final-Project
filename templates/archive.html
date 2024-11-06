@@ -1,8 +1,17 @@
-{% extends "layout.html" %}
+{% extends "posts_div.html" %}
 {% block title %}
 Archive
 {% endblock %}
-{% block content %}
-        <h2>Archived Articles</h2>
-        <p>List of archived articles will go here.</p>
+{% block header %}
+<br>
+Archived Posts
+<br>
+<form method="GET" action="{{ url_for('views.search') }}">
+        <br>
+        <input type="text" name="query" class="form-control" placeholder="Search...">
+        <div align="center">
+                <button class="btn btn-custom" type="submit">Search</button>
+        </div>
+</form>
+
 {% endblock %}

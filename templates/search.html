@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block title %}
+Search Results
+{% endblock %}
+{% block content %}
+<br>
+<a class="nav-item nav-link" href="{{ url_for('views.advanced_search') }}">Advanced Search</a>
+<br>
+<h1>Search Results</h1>
+<br>
+{% for post in results %}
+<div class="card border-dark">
+    <div class="card-header d-flex justify-content-between align-items-center">
+            <a href="/user/{{post.user.username}}">{{post.user.username}}</a>
+            {%if current_user.id|string == post.author%}
+            <div class = "btn-group">
+                    <button type= "button" class = "btn btn-sm btn-custom dropdown-toggle" data-toggle="dropdown"></button>
+                    <ul class="dropdown-menu">
+                            <li><a href="/delete-post{{post.id}}" class = "dropdown-item">Delete</a></li>
+                    </ul>
+            </div>
+            {%endif%}
+    </div>
+    <div class = "card-body">
+            <div class = "card-text">{{post.text}}</div>
+    </div>
+    <div class = "card-footer text-muted">
+            {{post.date_created}}
+    </div>
+</div>
+<br>
+{%endfor%}
+{% endblock %}

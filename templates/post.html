@@ -1,10 +1,12 @@
-{% extends "layout.html" %}
+{% extends "posts_div.html" %}
 {% block title %}
-Home
+{{username}}'s Posts
 {% endblock %}
-{% block content %}
-    <section>
-        <h2>Latest Articles</h2>
-        <p>Check out the latest articles on various topics!</p>
-    </section>
+{% block header %}
+<h1 align="center">{{username}}'s Posts</h1>
+{% endblock %}
+{% block footer %}
+<div align="center">
+    <a href = "/home"><button type = "button" class="btn btn-secondary btn-lg">Back</button></a>
+</div>
 {% endblock %}
