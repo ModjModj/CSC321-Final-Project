@@ -53,6 +53,19 @@ def delete_post(id):
 
     return redirect(url_for('views.home'))
 
+@views.route('/edit/<id>', methods=['GET', 'POST'])
+@login_required
+def edit_post(id):
+    post = Post.query.get_or_404(id)
+
+    if request.method == 'POST':
+        post.text = request.form['text']
+        db.session.commit()
+        flash('Post has been edited!', category='success')
+        return redirect(url_for('views.archive', id=post.id))
+
+    return render_template('edit_post.html', post=post)
+
 
 @views.route('/search')
 def search():
