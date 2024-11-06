@@ -15,7 +15,7 @@ def home():
 #Forces user to login to view the page
 @login_required
 def archive():
-    posts = Post.query.all()
+    posts = Post.query.order_by(Post.date_created.desc()).all()
     return render_template("archive.html", user = current_user, posts = posts)
 
 #Allows user to create a post
@@ -99,5 +99,5 @@ def posts(username):
         flash("No user with that username")
         return redirect(url_for("views.archive"))
     
-    post = Post.query.filter_by(author=user.id).all()
+    post = Post.query.filter_by(author=user.id).order_by(Post.date_created.desc()).all()
     return render_template("post.html", user=current_user, posts=post, username = username)
