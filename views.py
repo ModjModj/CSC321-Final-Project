@@ -1,6 +1,6 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required, current_user
-from tables import Post, User
+from tables import Comment, Post, User
 from __init__ import db
 
 views = Blueprint("views", __name__)
@@ -44,19 +44,24 @@ def delete_post(id):
 
     if not post:
         flash("Post does not exist.", category='error')
-    elif current_user.id != post.id:
+    elif current_user.id != post.author:
         flash('You do not have permission to delete this post.', category='error')
     else:
         db.session.delete(post)
         db.session.commit()
         flash('Post deleted.', category='success')
 
-    return redirect(url_for('views.home'))
+    return redirect(url_for('views.archive'))
 
-@views.route('/edit/<id>', methods=['GET', 'POST'])
+@views.route('/edit-post/<id>', methods=['GET', 'POST'])
 @login_required
 def edit_post(id):
     post = Post.query.get_or_404(id)
+
+    if not post:
+        flash("Post does not exist.", category='error')
+    elif current_user.id != post.author:
+        flash('You do not have permission to edit this post.', category='error')
 
     if request.method == 'POST':
         post.text = request.form['text']
@@ -101,3 +106,55 @@ def posts(username):
     
     post = Post.query.filter_by(author=user.id).order_by(Post.date_created.desc()).all()
     return render_template("post.html", user=current_user, posts=post, username = username)
+
+@views.route("/create-comment/<post_id>", methods=['POST'])
+@login_required
+def create_comment(post_id):
+    text = request.form.get('text')
+
+    if not text:
+        flash("Comment cannot be empty!")
+    else:
+        post = Post.query.filter_by(id=post_id)
+    if post:
+        comment = Comment(text = text, author = current_user.id, post_id = post_id)
+        db.session.add(comment)
+        db.session.commit()
+        flash("Successfully commented!", category="success")
+    else:
+        flash("The post you are attempting to comment on does not exist")
+    return redirect(url_for("views.archive"))
+
+@views.route("/delete-comment/<id>")
+@login_required
+def delete_comment(id):
+    comment = Comment.query.filter_by(id=id).first()
+
+    if not comment:
+        flash("Comment does not exist.", category='error')
+    elif current_user.id != comment.author and current_user.id != comment.post.author:
+        flash('You do not have permission to delete this comment.', category='error')
+    else:
+        db.session.delete(comment)
+        db.session.commit()
+        flash('Comment deleted.', category='success')
+
+    return redirect(url_for('views.archive'))
+
+@views.route('/edit-comment/<id>', methods=['GET', 'POST'])
+@login_required
+def edit_comment(id):
+    comment = Comment.query.get_or_404(id)
+
+    if not comment:
+        flash("Comment does not exist.", category='error')
+    elif current_user.id != comment.author:
+        flash('You do not have permission to edit this comment.', category='error')
+
+    if request.method == 'POST':
+        comment.text = request.form['text']
+        db.session.commit()
+        flash('Comment has been edited!', category='success')
+        return redirect(url_for('views.archive', id=comment.id))
+
+    return render_template('edit_comment.html', comment=comment)

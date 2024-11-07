@@ -20,7 +20,7 @@ def create_app():
     app.register_blueprint(views, url_prefix="/")
     app.register_blueprint(auth, url_prefix="/")
 
-    from tables import User
+    from tables import User, Post, Comment
 
     #Create SQL db
     with app.app_context():
