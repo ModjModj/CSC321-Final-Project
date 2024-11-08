@@ -36,7 +36,7 @@ def create_post():
 
     return render_template('create_post.html', user=current_user)
 
-
+#Allows users to delete posts if they are the author
 @views.route("/delete-post/<id>")
 @login_required
 def delete_post(id):
@@ -53,6 +53,8 @@ def delete_post(id):
 
     return redirect(url_for('views.archive'))
 
+
+#Allows users to edit posts if they are the author
 @views.route('/edit-post/<id>', methods=['GET', 'POST'])
 @login_required
 def edit_post(id):
@@ -72,6 +74,7 @@ def edit_post(id):
     return render_template('edit_post.html', post=post)
 
 
+#Gets input from search bar and returns posts that fufill those qualifications
 @views.route('/search')
 def search():
     query = request.args.get('query')
@@ -79,10 +82,12 @@ def search():
 
     return render_template('search.html', results=posts, query=query)
 
+#Links to advanced search webpage
 @views.route('/advanced-search')
 def advanced_search():
     return render_template('advanced_search.html')
 
+#Gets advanced search input and returns posts that fufill those qualifications
 @views.route('/advanced-results')
 def advanced_results():
     query = request.args.get('query')
@@ -95,6 +100,7 @@ def advanced_results():
         posts = Post.query.filter(Post.text.like(f'%{query}%') & Post.author.like(f'%{name}%')).all()
     return render_template('advanced_results.html', results=posts)
 
+#Displays user profile and all posts made by that user
 @views.route("/user/<username>")
 @login_required
 def posts(username):
@@ -107,6 +113,7 @@ def posts(username):
     post = Post.query.filter_by(author=user.id).order_by(Post.date_created.desc()).all()
     return render_template("post.html", user=current_user, posts=post, username = username)
 
+#Allows user to create and post comments
 @views.route("/create-comment/<post_id>", methods=['POST'])
 @login_required
 def create_comment(post_id):
@@ -125,6 +132,7 @@ def create_comment(post_id):
         flash("The post you are attempting to comment on does not exist")
     return redirect(url_for("views.archive"))
 
+#Allows user to delete comments if they are the post author or the comment author
 @views.route("/delete-comment/<id>")
 @login_required
 def delete_comment(id):
@@ -141,6 +149,7 @@ def delete_comment(id):
 
     return redirect(url_for('views.archive'))
 
+#Allows users to edit comments if they are the comment author
 @views.route('/edit-comment/<id>', methods=['GET', 'POST'])
 @login_required
 def edit_comment(id):
