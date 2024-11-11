@@ -111,7 +111,19 @@ def posts(username):
         return redirect(url_for("views.archive"))
     
     post = Post.query.filter_by(author=user.id).order_by(Post.date_created.desc()).all()
-    return render_template("post.html", user=current_user, posts=post, username = username)
+    return render_template("user_profile.html", user=current_user, posts=post, username = username)
+
+#Displays specific post
+@views.route("/post/<id>")
+@login_required
+def view_post(id):
+    post = Post.query.get_or_404(id)
+
+    if not post:
+        flash("Post does not exist.", category='error')
+    
+    return render_template("post_view.html", post=post, user = current_user)
+
 
 #Allows user to create and post comments
 @views.route("/create-comment/<post_id>", methods=['POST'])
