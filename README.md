@@ -15,3 +15,7 @@ Login Page -- User authentication
 Home Page -- Create and view posts
 Posts -- Post comments on created posts
 Archive -- View and search for posts made by previous users
+
+TechWithTim Pytho Flask Blog Tutorial
+  -Used for posting and login functionality
+  https://github.com/techwithtim/Flask-Blog-Tutorial/tree/main
